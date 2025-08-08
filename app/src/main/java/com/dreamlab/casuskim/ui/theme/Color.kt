@@ -2,10 +2,14 @@ package com.dreamlab.casuskim.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val SlateGray = Color(0xFF1B263B)
+val SpyRed = Color(0xFFFF4C4C)
+val NeonBlue = Color(0xFF00FFFF)
+val LightGray = Color(0xFFC0C0C0)
+
+// Ortak renkler
+val GoldAccent = Color(0xFFD4AF37)
+val NightBlue = Color(0xFF0B1D36)
+val SoftWhite = Color(0xFFF5F5F5)
+val SteelGray = Color(0xFF1F2E40)
