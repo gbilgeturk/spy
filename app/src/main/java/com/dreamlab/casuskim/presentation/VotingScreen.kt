@@ -1,14 +1,18 @@
 package com.dreamlab.casuskim.presentation
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
 import com.dreamlab.casuskim.R
@@ -17,6 +21,7 @@ import com.dreamlab.casuskim.domain.model.Player
 import com.dreamlab.casuskim.presentation.navigation.Screen
 import com.dreamlab.casuskim.ui.common.PrimaryGradientButton
 import com.dreamlab.casuskim.ui.common.ScreenPanel
+import com.dreamlab.casuskim.ui.common.SecondaryGradientButton
 import com.dreamlab.casuskim.ui.common.SpyBackground
 import com.dreamlab.casuskim.ui.theme.*
 import com.dreamlab.casuskim.util.gradientBackground
@@ -44,33 +49,57 @@ fun VotingScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             ScreenPanel(Modifier.fillMaxWidth()) {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text("Oylama", style = MaterialTheme.typography.headlineSmall)
+
                     if (!revealed) {
                         players.forEach { p ->
                             OutlinedButton(
                                 onClick = { selected = p },
                                 modifier = Modifier.fillMaxWidth(),
-                                border = if (selected == p) ButtonDefaults.outlinedButtonBorder(true)
-                                else ButtonDefaults.outlinedButtonBorder(false)
-                            ) { Text(p.name) }
+                                border = BorderStroke(
+                                    2.dp,
+                                    if (selected == p) GoldAccent else Color.Gray
+                                ),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    containerColor = if (selected == p) GoldAccent.copy(alpha = 0.1f) else Color.Transparent,
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(p.name, style = MaterialTheme.typography.bodyLarge)
+                            }
                         }
                     } else {
                         if (selected?.isSpy == true && !guessMode) {
-                            Text("Casus bulundu: ${selected?.name}. Mekanı doğru tahmin ederse kazanır.")
+                            Text(
+                                "Casus bulundu: ${selected?.name}. Mekanı doğru tahmin ederse kazanır.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center
+                            )
                             Spacer(Modifier.height(8.dp))
-                            allLocations.shuffled().take(6).forEach { loc ->
-                                OutlinedButton(
-                                    onClick = {
-                                        val win = (loc.name == actualLocation)
-                                        onFinish(win)
-                                    },
-                                    modifier = Modifier.fillMaxWidth()
-                                ) { Text(loc.name) }
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                allLocations.shuffled().take(6).forEach { loc ->
+                                    SecondaryGradientButton(
+                                        text = loc.name,
+                                        onClick = {
+                                            val win = (loc.name == actualLocation)
+                                            guessMode = true // ✅ Mekân seçildikten sonra ayarlanıyor
+                                            onFinish(win)
+                                        },
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
                             }
-                            guessMode = true
-                        } else {
-                            Text("Yanlış seçim. Casus farklı biri.")
+                        } else if (selected?.isSpy != true) {
+                            Text(
+                                "Yanlış seçim. Casus farklı biri.",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                             Spacer(Modifier.height(8.dp))
                             PrimaryGradientButton(
                                 text = "Sonuca Git",

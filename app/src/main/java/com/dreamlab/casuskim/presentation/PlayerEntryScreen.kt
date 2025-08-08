@@ -1,11 +1,13 @@
 package com.dreamlab.casuskim.presentation
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -38,7 +40,7 @@ fun PlayerEntryScreen(
     onStart: (List<String>) -> Unit
 ) {
     val context = LocalContext.current
-    val playerNames = remember { mutableStateListOf("", "", "", "") }
+    val playerNames = remember { mutableStateListOf("", "", "") }
     val canStart by derivedStateOf { playerNames.count { it.isNotBlank() } >= 3 }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -114,16 +116,30 @@ fun PlayerEntryScreen(
                                     .padding(vertical = 6.dp)
                             )
                         }
-
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             TextButton(
                                 onClick = { if (playerNames.size < 8) playerNames.add("") },
-                                enabled = playerNames.size < 8
-                            ) { Text("Oyuncu Ekle") }
+                                enabled = playerNames.size < 8,
+                                colors = ButtonDefaults.textButtonColors(
+                                    contentColor = GoldAccent // Tema rengine uyumlu
+                                ),
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier
+                                    .border(1.dp, GoldAccent, RoundedCornerShape(12.dp))
+                                    .padding(horizontal = 8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = null,
+                                    tint = GoldAccent
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text("Oyuncu Ekle")
+                            }
 
                             Text(
                                 text = "${playerNames.count { it.isNotBlank() }}/8 oyuncu",

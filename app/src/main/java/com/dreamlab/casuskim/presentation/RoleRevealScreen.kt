@@ -36,7 +36,9 @@ import com.dreamlab.casuskim.ui.common.PrimaryGradientButton
 import com.dreamlab.casuskim.ui.common.ScreenPanel
 import com.dreamlab.casuskim.ui.common.SpyBackground
 import com.dreamlab.casuskim.ui.theme.GoldAccent
-import com.dreamlab.casuskim.util.gradientBackground
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.ExitTransition
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -73,12 +75,14 @@ fun RoleRevealScreen(
         ) {
             ScreenPanel(Modifier.fillMaxWidth()) {
                 AnimatedContent(
-                    targetState = showRole,
+                    targetState = Pair(currentIndex, showRole),
                     transitionSpec = {
-                        fadeIn(tween(300)) togetherWith fadeOut(tween(300))
+                        fadeIn(tween(300)) togetherWith fadeOut(tween(300)) using
+                                SizeTransform(clip = false)
                     },
                     modifier = Modifier.fillMaxWidth()
-                ) { isShowing ->
+                ) { (index, isShowing) ->
+                    val player = players[index]
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -168,8 +172,8 @@ fun RoleRevealScreen(
                     if (!showRole) {
                         showRole = true
                     } else {
-                        showRole = false
                         if (currentIndex < players.lastIndex) {
+                            showRole = false
                             onNext(currentIndex + 1)
                         } else {
                             onFinish()
@@ -181,3 +185,4 @@ fun RoleRevealScreen(
         }
     }
 }
+
