@@ -49,14 +49,7 @@ fun PrimaryGradientButton(
             text = text,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            letterSpacing = 1.sp,
-            style = LocalTextStyle.current.copy(
-                shadow = Shadow(
-                    color = Color(0x80000000),
-                    offset = Offset(1f, 1f),
-                    blurRadius = 2f
-                )
-            )
+            letterSpacing = 1.sp
         )
     }
 }
