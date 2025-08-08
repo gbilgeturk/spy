@@ -2,6 +2,7 @@ package com.dreamlab.casuskim.presentation
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -48,7 +49,7 @@ fun PlayerEntryScreen(
 
     Box(Modifier.fillMaxSize()) {
         // Arka plan
-        SpyBackground(Modifier.matchParentSize()){}
+        SpyBackground(Modifier.matchParentSize()) {}
 
         // Scaffold üstte, Snackbar burada
         Scaffold(
@@ -62,89 +63,98 @@ fun PlayerEntryScreen(
                 )
             }
         ) { innerPadding ->
+
             Column(
-                Modifier
+                modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .systemBarsPadding()
-                    .padding(innerPadding)
-                    .padding(20.dp),
+                    .navigationBarsPadding()
+                    .systemBarsPadding(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Oyuncu İsimlerini Girin",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = GoldAccent
-                        )
-                        IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
-                            Icon(
-                                imageVector = Icons.Default.Settings,
-                                contentDescription = "Ayarlar",
-                                tint = GoldAccent
+                Column(
+                    Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(innerPadding)
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Oyuncu İsimlerini Girin",
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = GoldAccent
                             )
+                            IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
+                                Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = "Ayarlar",
+                                    tint = GoldAccent
+                                )
+                            }
                         }
-                    }
-                    Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(16.dp))
 
-                    ScreenPanel(Modifier.fillMaxWidth()) {
-                        repeat(playerNames.size) { index ->
-                            OutlinedTextField(
-                                value = playerNames[index],
-                                onValueChange = { playerNames[index] = it },
-                                label = { Text("Oyuncu ${index + 1}") },
-                                leadingIcon = {
+                        ScreenPanel(Modifier.fillMaxWidth()) {
+                            repeat(playerNames.size) { index ->
+                                OutlinedTextField(
+                                    value = playerNames[index],
+                                    onValueChange = { playerNames[index] = it },
+                                    label = { Text("Oyuncu ${index + 1}") },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Default.Person,
+                                            contentDescription = null,
+                                            tint = GoldAccent
+                                        )
+                                    },
+                                    singleLine = true,
+                                    keyboardOptions = KeyboardOptions.Default.copy(
+                                        capitalization = KeyboardCapitalization.Words
+                                    ),
+                                    colors = darkTextFieldColors(),
+                                    shape = RoundedCornerShape(12.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 6.dp)
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                TextButton(
+                                    onClick = { if (playerNames.size < 8) playerNames.add("") },
+                                    enabled = playerNames.size < 8,
+                                    colors = ButtonDefaults.textButtonColors(
+                                        contentColor = GoldAccent // Tema rengine uyumlu
+                                    ),
+                                    shape = RoundedCornerShape(12.dp),
+                                    modifier = Modifier
+                                        .border(1.dp, GoldAccent, RoundedCornerShape(12.dp))
+                                        .padding(horizontal = 8.dp)
+                                ) {
                                     Icon(
-                                        Icons.Default.Person,
+                                        imageVector = Icons.Default.Add,
                                         contentDescription = null,
                                         tint = GoldAccent
                                     )
-                                },
-                                singleLine = true,
-                                keyboardOptions = KeyboardOptions.Default.copy(
-                                    capitalization = KeyboardCapitalization.Words
-                                ),
-                                colors = darkTextFieldColors(),
-                                shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 6.dp)
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            TextButton(
-                                onClick = { if (playerNames.size < 8) playerNames.add("") },
-                                enabled = playerNames.size < 8,
-                                colors = ButtonDefaults.textButtonColors(
-                                    contentColor = GoldAccent // Tema rengine uyumlu
-                                ),
-                                shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier
-                                    .border(1.dp, GoldAccent, RoundedCornerShape(12.dp))
-                                    .padding(horizontal = 8.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = null,
-                                    tint = GoldAccent
-                                )
-                                Spacer(Modifier.width(6.dp))
-                                Text("Oyuncu Ekle")
-                            }
+                                    Spacer(Modifier.width(6.dp))
+                                    Text("Oyuncu Ekle")
+                                }
 
-                            Text(
-                                text = "${playerNames.count { it.isNotBlank() }}/8 oyuncu",
-                                style = MaterialTheme.typography.labelLarge
-                            )
+                                Text(
+                                    text = "${playerNames.count { it.isNotBlank() }}/8 oyuncu",
+                                    style = MaterialTheme.typography.labelLarge
+                                )
+                            }
                         }
                     }
                 }
@@ -168,9 +178,11 @@ fun PlayerEntryScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                         .clip(RoundedCornerShape(14.dp))
                 )
             }
+
         }
     }
 }

@@ -53,32 +53,41 @@ fun OnboardingScreen(navController: NavController, onFinish: () -> Unit) {
                 .fillMaxSize()
                 .systemBarsPadding()
                 .imePadding()
-                .navigationBarsPadding()
-                .padding(20.dp),
+                .navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Spacer(Modifier.height(10.dp))
-            HorizontalPager(state = pagerState) { page ->
+            HorizontalPager( state = pagerState,
+                contentPadding = PaddingValues(horizontal = 20.dp), // 📏 Kenarlardan boşluk
+                pageSpacing = 16.dp) { page ->
                 val item = pages[page]
-                ScreenPanel(Modifier.fillMaxWidth()) {
-                    Image(
-                        painter = painterResource(item.image),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(200.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    Text(
-                        text = item.title,
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = item.description,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                ScreenPanel(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(400.dp) // 📏 Sabit yükseklik
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painterResource(item.image),
+                            contentDescription = null,
+                            modifier = Modifier.size(200.dp)
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            text = item.title,
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = item.description,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
                 }
             }
             PrimaryGradientButton(
@@ -93,6 +102,7 @@ fun OnboardingScreen(navController: NavController, onFinish: () -> Unit) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(16.dp)
                     .clip(RoundedCornerShape(14.dp))
             )
         }
