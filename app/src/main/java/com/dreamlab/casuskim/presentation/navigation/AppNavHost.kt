@@ -11,15 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.dreamlab.casuskim.presentation.CivilianVotingScreen
 import com.dreamlab.casuskim.presentation.GameScreen
 import com.dreamlab.casuskim.presentation.GameViewModel
 import com.dreamlab.casuskim.presentation.PlayerEntryScreen
 import com.dreamlab.casuskim.presentation.ResultScreen
-import com.dreamlab.casuskim.presentation.VotingScreen
 import com.dreamlab.casuskim.presentation.RoleRevealScreen
 import com.dreamlab.casuskim.presentation.SettingsScreen
+import com.dreamlab.casuskim.presentation.SpyGuessScreen
 import com.dreamlab.casuskim.presentation.onboarding.OnboardingScreen
 
 @Composable
@@ -72,18 +75,38 @@ fun AppNavHost(
         composable(Screen.Game.route) {
             GameScreen(
                 viewModel = viewModel,
-                onStartVoting = { navController.navigate(Screen.Voting.route) },
-                onSpyWantsToAnswer = { navController.navigate(Screen.Voting.route) }
+                onStartVoting = { navController.navigate(Screen.CivilianVoting.route)},
+                onSpyWantsToAnswer = {     navController.navigate(Screen.SpyGuess.route)
+                }
             )
         }
 
-        composable(Screen.Voting.route) {
-            val context = LocalContext.current
-            VotingScreen(
+        composable(Screen.CivilianVoting.route) {
+            CivilianVotingScreen(
                 players = viewModel.players,
-                allLocations = viewModel.getAllLocations(context),
-                onFinish = { right ->
-                    viewModel.setSpyGuessResult(right)
+                onSpyFound = {
+                    // Sivil kazandı
+                    viewModel.setSpyGuessResult(false)
+                    navController.navigate(Screen.Result.route)
+                },
+                onSpyNotFound = {
+                    // Casus tahmine geçiyor
+                    navController.navigate(Screen.SpyGuess.route)
+                }
+            )
+        }
+
+        composable(Screen.SpyGuess.route) {
+            val actualLocation = viewModel.players.firstOrNull { !it.isSpy }?.roleLocation ?: ""
+            SpyGuessScreen(
+                allLocations = viewModel.getAllLocations(LocalContext.current),
+                actualLocation = actualLocation,
+                onSpyWins = {
+                    viewModel.setSpyGuessResult(true)
+                    navController.navigate(Screen.Result.route)
+                },
+                onSpyLoses = {
+                    viewModel.setSpyGuessResult(false)
                     navController.navigate(Screen.Result.route)
                 }
             )

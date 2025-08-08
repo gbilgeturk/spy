@@ -35,16 +35,7 @@ fun ResultScreen(
     val spy = players.find { it.isSpy }
     val location = players.firstOrNull { !it.isSpy }?.roleLocation ?: "Bilinmiyor"
 
-    val isSpyWinner = spyGuessedRight
-    val title = if (isSpyWinner) "Casus Kazandı!" else "Sivil Takım Kazandı!"
-    val subtitle = if (isSpyWinner) {
-        "Casus mekan tahminini doğru yaptı."
-    } else {
-        "Siviller casusu buldu!"
-    }
-
-    val bgColor = if (isSpyWinner) Color(0xFFB71C1C) else Color(0xFF1B5E20) // kırmızı / yeşil
-    val icon = if (isSpyWinner) Icons.Default.Close else Icons.Default.CheckCircle
+    val title = if (spyGuessedRight) "Casus Kazandı!" else "Sivil Takım Kazandı!"
 
     SpyBackground(Modifier.fillMaxSize()) {
         Column(
@@ -52,53 +43,18 @@ fun ResultScreen(
                 .fillMaxSize()
                 .padding(20.dp)
                 .systemBarsPadding()
+                .imePadding()
                 .navigationBarsPadding(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Üst panel
-            ScreenPanel(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 40.dp)
-            ) {
+            ScreenPanel(Modifier.fillMaxWidth()) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Kazanan ikonu
-                    Box(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape)
-                            .background(bgColor),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(60.dp)
-                        )
-                    }
-
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = bgColor
-                    )
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.White
-                    )
-
-                    Divider(
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        color = Color.Gray.copy(alpha = 0.4f)
-                    )
-
+                    Text(title, style = MaterialTheme.typography.headlineSmall)
                     Text("Casus: ${spy?.name ?: "—"}", style = MaterialTheme.typography.titleMedium)
                     Text("Mekan: $location", style = MaterialTheme.typography.titleMedium)
                 }
@@ -107,9 +63,7 @@ fun ResultScreen(
             PrimaryGradientButton(
                 text = "Yeni Oyun",
                 onClick = onNewGame,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp)
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

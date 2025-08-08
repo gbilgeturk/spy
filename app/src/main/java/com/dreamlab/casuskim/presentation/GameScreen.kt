@@ -32,6 +32,11 @@ fun GameScreen(
             secondsLeft--
         }
     }
+    LaunchedEffect(secondsLeft) {
+        if (secondsLeft <= 0) {
+            onStartVoting()
+        }
+    }
 
     val progress = secondsLeft / viewModel.roundTimeSeconds.toFloat()
     val mm = secondsLeft / 60
